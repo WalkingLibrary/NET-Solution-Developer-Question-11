@@ -1,0 +1,137 @@
+﻿@{
+    ViewData["Title"] = "Index";
+}
+
+<div class"centered">
+<h1 class="title">Enjoy these Photos</h1>
+</div>
+<style>
+
+    .title{
+        width:100%;
+        text-align:center;
+    }
+    .centered{
+ 
+        display:flex;
+        align-items: center;
+        justify-content: center;
+        flex-flow: row;
+       
+    }
+
+
+    .tab {
+    min-height: 150px;
+    min-width: 300px;
+    height: 100px;
+    width: 100%;
+    display:flex;
+    align-items: center;
+    justify-content: center;
+    flex-flow: row;
+    margin: 30px;
+    padding:10px;
+    border-radius: 30px;
+    background-color: grey;
+}
+
+img{
+    height:100%;
+    padding:10px;
+}
+
+h1{
+    width:33%;
+}
+
+
+</style>
+
+
+<script>
+ console.log("Loading Script");
+ class Item{
+
+ }
+
+ function filterRequestResponse(xmlHttpRequest, onReadyFunction)
+{
+    if (xmlHttpRequest.status === 403 && getUser() !== null)
+    {
+        clearUserInfo();
+        location.reload();
+        return;
+    }
+
+    onReadyFunction(xmlHttpRequest);
+}
+
+ function sendGetRequest(url, onReadyFunction, filterResponse)
+{
+    let xmlHttpRequest = new XMLHttpRequest();
+    let shouldFilterResponse = filterResponse === undefined ? true : filterResponse;
+
+    xmlHttpRequest.onreadystatechange = function ()
+    {
+        if (this.readyState === 4)
+        {
+            if (shouldFilterResponse)
+            {
+                filterRequestResponse(xmlHttpRequest, onReadyFunction);
+            }
+            else
+            {
+                onReadyFunction(xmlHttpRequest);
+            }
+        }
+    };
+    xmlHttpRequest.open("GET", url, true);
+    
+    xmlHttpRequest.send();
+    console.log("Sent");
+}
+
+function onReadyFunction(request)
+{
+    console.log("Response:" + request.response);
+
+    tabsToLoad = JSON.parse(request.response);
+
+    
+    page = document.createElement("div");
+    document.body.appendChild(page);
+    for(let i = 0; i < 50; i++)
+    {
+      
+        /*Create container */
+        let title = tabsToLoad[i].title;
+        contentDiv = document.createElement("div");
+
+
+
+          /* Add Title */
+        contentDiv.className = "tab";
+        contentDiv.innerHTML =  "<h6>Title: " + title + "</h6>";
+
+        
+
+        /*Add Image */
+
+        let imageSource = tabsToLoad[i].url;
+        contentDiv.innerHTML +=  "<img src="+ imageSource+"/>";
+
+        
+        page.appendChild(contentDiv);
+
+
+    }
+
+}
+
+sendGetRequest('https://jsonplaceholder.typicode.com/photos', onReadyFunction);
+console.log("End");
+
+</script>
+
+
