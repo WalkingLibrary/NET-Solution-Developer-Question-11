@@ -7,25 +7,26 @@
 </div>
 <style>
 
-    .title{
-        width:100%;
-        text-align:center;
-    }
-    .centered{
- 
-        display:flex;
-        align-items: center;
-        justify-content: center;
-        flex-flow: row;
-       
-    }
+.title{
+    width:100%;
+    text-align:center;
+}
+.centered{
 
 
-    .tab {
+    display:flex;
+    align-items: center;
+    justify-content: center;
+    flex-flow: row;
+
+}
+
+
+.tab {
     min-height: 150px;
     min-width: 300px;
     height: 100px;
-    width: 100%;
+    width: calc(100% - 60px);
     display:flex;
     align-items: center;
     justify-content: center;
@@ -50,12 +51,20 @@ h1{
 
 
 <script>
- console.log("Loading Script");
- class Item{
 
- }
 
- function filterRequestResponse(xmlHttpRequest, onReadyFunction)
+
+/*
+* Process for Loading Page
+* Make Get Request to API URL
+* Add Content in Call Back Function
+*/
+console.log("Loading Script");
+class Item{
+
+}
+
+function filterRequestResponse(xmlHttpRequest, onReadyFunction)
 {
     if (xmlHttpRequest.status === 403 && getUser() !== null)
     {
@@ -67,7 +76,7 @@ h1{
     onReadyFunction(xmlHttpRequest);
 }
 
- function sendGetRequest(url, onReadyFunction, filterResponse)
+function sendGetRequest(url, onReadyFunction, filterResponse)
 {
     let xmlHttpRequest = new XMLHttpRequest();
     let shouldFilterResponse = filterResponse === undefined ? true : filterResponse;
@@ -87,41 +96,44 @@ h1{
         }
     };
     xmlHttpRequest.open("GET", url, true);
-    
+
     xmlHttpRequest.send();
     console.log("Sent");
 }
 
+/*Add Content in Call Back Function*/
 function onReadyFunction(request)
 {
     console.log("Response:" + request.response);
 
+
+    /*the information being sent is in Json Format*/
     tabsToLoad = JSON.parse(request.response);
 
-    
+
     page = document.createElement("div");
     document.body.appendChild(page);
-    for(let i = 0; i < 50; i++)
+
+    /*We can iterate over all the Information Coming In as it's sent in a list*/
+    for (let i = 0; i < 50; i++)
     {
-      
+
         /*Create container */
         let title = tabsToLoad[i].title;
         contentDiv = document.createElement("div");
 
 
-
-          /* Add Title */
+        /* Add Title */
         contentDiv.className = "tab";
-        contentDiv.innerHTML =  "<h6>Title: " + title + "</h6>";
+        contentDiv.innerHTML = "<h6>Title: " + title + "</h6>";
 
-        
 
         /*Add Image */
 
         let imageSource = tabsToLoad[i].url;
-        contentDiv.innerHTML +=  "<img src="+ imageSource+"/>";
+        contentDiv.innerHTML += "<img src=" + imageSource + "/>";
 
-        
+
         page.appendChild(contentDiv);
 
 
@@ -129,6 +141,9 @@ function onReadyFunction(request)
 
 }
 
+
+
+/*Make Get Request to API URL*/
 sendGetRequest('https://jsonplaceholder.typicode.com/photos', onReadyFunction);
 console.log("End");
 

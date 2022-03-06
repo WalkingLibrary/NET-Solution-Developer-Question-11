@@ -3,7 +3,7 @@ using System.Text.Encodings.Web;
 
 namespace MvcMovie.Controllers
 {
-    public class HelloWorldController : Controller
+    public class NetSolutionController : Controller
     {
         // 
         // GET: /HelloWorld/
