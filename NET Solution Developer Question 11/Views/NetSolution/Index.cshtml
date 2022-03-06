@@ -21,6 +21,14 @@
 
 }
 
+a{
+    margin:10px;
+
+}
+div{
+    margin:10px;
+}
+
 
 .tab {
     min-height: 150px;
@@ -37,8 +45,14 @@
     background-color: grey;
 }
 
+input{
+    margin:10px;
+}
+
 img{
-    height:100%;
+    height:150px;
+    width:150px;
+
     padding:10px;
 }
 
@@ -60,9 +74,8 @@ h1{
 * Add Content in Call Back Function
 */
 console.log("Loading Script");
-class Item{
-
-}
+var itemsPerPage = 500;
+var tabsToLoad;
 
 function filterRequestResponse(xmlHttpRequest, onReadyFunction)
 {
@@ -101,21 +114,15 @@ function sendGetRequest(url, onReadyFunction, filterResponse)
     console.log("Sent");
 }
 
-/*Add Content in Call Back Function*/
-function onReadyFunction(request)
+
+function loadContent(currentItemSelected)
 {
-    console.log("Response:" + request.response);
-
-
-    /*the information being sent is in Json Format*/
-    tabsToLoad = JSON.parse(request.response);
-
-
-    page = document.createElement("div");
-    document.body.appendChild(page);
-
+    console.log("Loading " + currentItemSelected);
+    page = document.getElementById("page");
+    page.innerHTML = "";
+   
     /*We can iterate over all the Information Coming In as it's sent in a list*/
-    for (let i = 0; i < 50; i++)
+    for (let i = currentItemSelected; i < (itemsPerPage + currentItemSelected); i++)
     {
 
         /*Create container */
@@ -130,17 +137,50 @@ function onReadyFunction(request)
 
         /*Add Image */
 
+        let thumbNail = tabsToLoad[i].thumbnailUrl;
         let imageSource = tabsToLoad[i].url;
-        contentDiv.innerHTML += "<img src=" + imageSource + "/>";
+        contentDiv.innerHTML += "<a href=\"" + imageSource + "\"><img src=" + thumbNail  + "/></a>";
 
 
         page.appendChild(contentDiv);
 
 
     }
+}
+
+
+/*Add Content in Call Back Function*/
+function onReadyFunction(request)
+{
+    console.log("Response:" + request.response);
+
+
+    /* the information being sent is in Json Format
+     * Saved as a local Var to avoid reloading the Info
+     */
+    tabsToLoad = JSON.parse(request.response);
+
+    
+    loadContent(0);
+
+
+    footer = document.createElement("div");
+    footer.innerHTML ="<input value=\""+itemsPerPage+"\">Items Per Page</input> </br> <div>Page:";
+    footer.className = "tab";
+    for(var i = 0; i < (tabsToLoad.length / itemsPerPage); i++)
+    {
+        footer.innerHTML += "<a onclick=\"loadContent("+ i * itemsPerPage +")\">" + i +"<\a>"
+    }
+
+    footer.innerHTML += "</div>";
+
+    document.body.appendChild(footer);
 
 }
 
+page = document.createElement("div");
+page.id = "page";
+document.body.appendChild(page);
 
 
 /*Make Get Request to API URL*/
