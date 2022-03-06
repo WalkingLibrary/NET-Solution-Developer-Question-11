@@ -115,8 +115,18 @@ function sendGetRequest(url, onReadyFunction, filterResponse)
 }
 
 
-function loadContent(currentItemSelected)
+function loadContent(currentItemSelected, element)
 {
+    if(element != null)
+    {
+        var previousSelected = document.getElementsByClassName("selected");
+        previousSelected[0].removeAttribute('class');
+        console.log(previousSelected);
+        previousSelected.innerHTML = previousSelected.innerHTML;
+        console.log(previousSelected);
+
+        element.className = "selected";
+    }
     console.log("Loading " + currentItemSelected);
     page = document.getElementById("page");
     page.innerHTML = "";
@@ -169,7 +179,14 @@ function onReadyFunction(request)
     footer.className = "tab";
     for(var i = 0; i < (tabsToLoad.length / itemsPerPage); i++)
     {
-        footer.innerHTML += "<a onclick=\"loadContent("+ i * itemsPerPage +")\">" + i +"<\a>"
+        if(i==0)
+        {
+            footer.innerHTML += "<a class=\"selected\" onclick=\"loadContent("+ i * itemsPerPage +", this)\">" + (i + 1) +"<\a>";
+        }
+        else
+        {
+            footer.innerHTML += "<a onclick=\"loadContent("+ i * itemsPerPage +", this)\">" + (i + 1) +"<\a>";
+        }
     }
 
     footer.innerHTML += "</div>";
